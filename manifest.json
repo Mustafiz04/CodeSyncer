@@ -1,0 +1,90 @@
+{
+  "manifest_version": 3,
+  "name": "CodeHub",
+  "description": "Practicing now.",
+  "version": "0.0.1",
+  "author": "Mustafiz Kaifee",
+  "homepage_url": "https://github.com/Mustafiz04",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "/static/images/logoBeige.png",
+      "48": "/static/images/logoBeige.png",
+      "128": "/static/images/logoBlack.png"
+    }
+  },
+  "icons": {
+    "16": "/static/images/logoBeige.png",
+    "48": "/static/images/logoBeige.png",
+    "128": "/static/images/logoBlack.png"
+  },
+  "background": {
+    "service_worker": "/scripts/background.js"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabGroups",
+    "tabs",
+    "unlimitedStorage",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://github.com/*",
+    "https://api.github.com/*",
+    "https://leetcode.com/*",
+    "https://practice.geeksforgeeks.org/*"
+  ],
+  "content_scripts": [
+    {
+      "js": [
+        "scripts/leetcode.js"
+      ],
+      "css": [
+        "focus-mode.css"
+      ],
+      "matches": [
+        "https://leetcode.com/*"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "js": [
+        "scripts/w3.js"
+      ],
+      "css": [
+        "css/w3.css"
+      ],
+      "matches": [
+        "https://www.w3schools.com/*"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "js": [
+        "scripts/github.js"
+      ],
+      "matches": [
+        "https://github.com/*"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "js": [
+        "scripts/geeksforgeeks.js"
+      ],
+      "matches": [
+        "https://practice.geeksforgeeks.org/*"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+B",
+        "mac": "Command+B"
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <h1>PushMyCode</h1>
+    <h5>Sync your Leetcode or GFG submission with GitHub</h5>
+    <button id="githubOauthInit" >Authenticate with GitHub to use PushYourCode</button>
+    <a href="/" id="githubRepoLink" target="_blank"><p id="unlinkRepoName"></p></a>
+    <!-- <h1 id="githubName"> </h1>
+    <h1 id="githubUsername"></h1> -->
+
+    <div id="countTab">
+      <div id="score">
+        <div>Easy - <span id="easyCount">0</span></div> 
+        <div>Medium - <span id="mediumCount">0</span></div> 
+        <div>Hard - <span id="hardCount">0</span></div> 
+      </div>
+      <!-- <p>Hard - <span id="hardCount">0</span></p> -->
+
+      <h3>Total - <span id="totalCount">0</span></h3>
+    </div>
+
+    <footer>
+      <button id="openDashboardBtn">Dashboard</button>
+      <hr>
+      <div id="social-media">
+        <a  href="https://github.com/Mustafiz04" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a> |
+        <a href="https://twitter.com/mustafiz_kaifee" target="_blank"><i class="fa-brands fa-twitter"></i> Twitter</a> |
+        <a href="https://www.linkedin.com/in/mustafizkaifee/" target="_blank"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+      </div>
+    </footer>
+
+    <script src="./scripts/popup.js" type="module"></script>
+  </body>
+</html>

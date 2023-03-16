@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./dashboard.css" />
+  <title>Dashboard</title>
+</head>
+
+<body>
+  <img src="./static/images/logoWhite.PNG" alt="logo" id="logo" />
+  <div id="welcome">
+    <h1> Welcome <span id="githubName"></span></h1>
+  </div>
+  <!-- <h1 id="githubUsername"></h1> -->
+
+  <div id="linking">
+    <div>
+      <input type="radio" name="linkRepo" value="existing" id="myRadio">Link Existing Repository
+      <input type="radio" name="linkRepo" value="create" id="myRadio">Create New Private Repository
+    </div>
+    
+    <input type="text" id="repoName" name="repoName" placeholder="Enter your repository name">
+    <br>
+    <button id="linkRepoBtn">Link Repository</button>
+  </div>
+
+  <a href="" id="githubRepoLink" target="_blank" ><h3 id="unlinkRepoName"></h3></a>
+  <button id="unlink">Unlink</button>
+
+  <div id="stats">
+    <h3>Total <br> <span id="totalCountSpan">0</span></h3>
+    <div id="count">
+      <div>Easy <br> <span id="easyCount">0</span></div>
+      <div>Medium <br> <span id="mediumCount">0</span></div>
+      <div>Hard <br> <span id="hardCount">0</span></div>
+    </div>
+  </div>
+
+  <footer>
+    <div id="social-media">
+      <a  href="https://github.com/Mustafiz04" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a> |
+      <a href="https://twitter.com/mustafiz_kaifee" target="_blank"><i class="fa-brands fa-twitter"></i> Twitter</a> |
+      <a href="https://www.linkedin.com/in/mustafizkaifee/" target="_blank"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+    </div>
+  </footer>
+
+  <script src="./scripts/dashboard.js" type="module"></script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+body {
+  width: 20rem;
+  text-align: center;
+}
+
+h5 {
+  margin-top: -10px;
+}
+
+#countTab {
+  padding: 5px;
+}
+
+#countTab > h3 {
+  /* text-align: center; */
+  padding: 5px;
+}
+
+#unlinkRepoName {
+  padding-bottom: 10px;
+  color: blue;
+}
+
+#score {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 50px;
+  align-items: center;
+  justify-content: center;
+}
+
+footer > button {
+  /* background: none; */
+  border: 1px solid white;
+  padding: 10px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+footer > button:hover {
+  font-weight: bolder;
+}
+
+#social-media > a {
+  text-decoration: none;
+  padding: 5px
+}
+
+#social-media > a:hover {
+  text-decoration: none;
+  padding: 5px
+}
