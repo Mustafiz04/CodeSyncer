@@ -16,12 +16,16 @@ chrome.storage.local.get(['githubUserName', 'githubName', 'githubToken', 'github
   console.log("res.githubUserName >>>", res.githubUserName)
   console.log("res.githubName >>>", res.githubName)
   console.log("res.githubUserEmail >>>", res.githubUserEmail)
-  unlinkRepoName.innerText = res.likedRepoFullname || ""
-  githubRepoLinkA.href = "https://github.com/" + res.likedRepoFullname
+  if(res.likedRepoFullname) {
+    unlinkRepoName.innerText = res.likedRepoFullname || ""
+    unlinkRepoName.style.color = 'blue'
+    githubRepoLinkA.href = "https://github.com/" + res.likedRepoFullname
+  }
 
   if (res.githubToken) {
     githubOauthInitBtn.style.display = 'none'
   } else {
+    githubRepoLinkA.style.display = 'none'
     countTabDiv.style.display = 'none'
     openDashboardBtn.style.display = 'none'
   }

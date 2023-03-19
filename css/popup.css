@@ -4,7 +4,20 @@ body {
 }
 
 h5 {
+  font-weight: lighter;
   margin-top: -10px;
+}
+
+#githubOauthInit {
+  border: 1px solid white;
+  padding: 10px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+#githubOauthInit:hover {
+  font-weight: bolder;
 }
 
 #countTab {
@@ -18,7 +31,11 @@ h5 {
 
 #unlinkRepoName {
   padding-bottom: 10px;
-  color: blue;
+  color: red;
+}
+
+#githubRepoLink {
+  text-decoration: none;
 }
 
 #score {
@@ -44,10 +61,10 @@ footer > button:hover {
 
 #social-media > a {
   text-decoration: none;
-  padding: 5px
+  padding: 5px;
 }
 
 #social-media > a:hover {
   text-decoration: none;
-  padding: 5px
+  padding: 5px;
 }

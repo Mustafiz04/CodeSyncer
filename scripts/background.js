@@ -11,6 +11,8 @@ function handleMessage({ userProfile }) {
   setUsername(username)
   setName(name)
   setEmail(email)
+
+  chrome.tabs.create({ url: chrome.runtime.getURL('../dashboard.html'), active: true });
 }
 
 function setUsername(username) {
@@ -36,8 +38,19 @@ chrome.runtime.onMessage.addListener(handleMessage);
 chrome.storage.local.get(
   ['githubUserName', 'githubName', 'githubRepoLinked', 'githubToken'], (userData) => {
     const { githubRepoLinked, githubToken } = userData
-    if(githubToken && githubRepoLinked){
+    if (githubToken && githubRepoLinked) {
       console.log("CODEHUB IS ALREADY SYNCED....")
     }
   }
 )
+
+function getCurrentTab() { 
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
+    console.log("tab ????", tab)
+    chrome.storage.local.set({"currentTab": tab.id}, () => {
+      console.log("CURRENT TAB ID IS SET", tab)
+    })
+  });
+};
+
+getCurrentTab()

@@ -97,9 +97,19 @@ function getCode() {
   return text || '';
 }
 
-function pushCode(code, difficulty, problemName, problemStatement, language, platform) {
+async function getCodeScript() {
+  chrome.storage.local.get(["currentTab"], (res) => {
+    chrome.scripting.executeScript({
+      target: { tabId: res.currentTab },
+      func: getCode,
+      args: [],
+    });
+  })
+}
+
+async function pushCode(code, difficulty, problemName, problemStatement, language, platform) {
   /* Get necessary payload data */
-  chrome.storage.local.get(['githubToken', 'githubRepoLinked', 'githubUserAuthenticated', 'linkRepoName', 'githubUserName', 'githubUserEmail', 'sha'], (userData) => {
+  chrome.storage.local.get(['githubToken', 'githubRepoLinked', 'githubUserAuthenticated', 'linkRepoName', 'githubUserName', 'githubUserEmail', 'sha'], async (userData) => {
     const token = userData.githubToken;
     const isAuthenticated = userData.githubUserAuthenticated
     const isRepoLinked = userData.githubRepoLinked
@@ -148,17 +158,21 @@ function pushCode(code, difficulty, problemName, problemStatement, language, pla
 
       // API call to push code
       if (problemStatement) {
-        pushCodeToGithub(token, readmeContent, owner, repoName, readmeFilePath, readmeCommitMessage, committer, 'readme', 'new')
+        await pushCodeToGithub(token, difficulty, readmeContent, owner, repoName, readmeFilePath, readmeCommitMessage, committer, 'readme', 'new')
       }
 
-      if(code) {
-        pushCodeToGithub(readmeContent, owner, repoName, codeFilePath, codeCommitMessage, committer, 'code', 'new')
+      await delay(10000);
+
+      if (code) {
+        await pushCodeToGithub(token, difficulty, content, owner, repoName, codeFilePath, codeCommitMessage, committer, 'code', 'new')
       }
     }
   });
 }
 
-async function pushCodeToGithub(token, content, owner, reponame, filePath, commitMessage, committer, commitType, commitAction) {
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+async function pushCodeToGithub(token, difficulty, content, owner, reponame, filePath, commitMessage, committer, commitType, commitAction) {
   try {
     const url = `https://api.github.com/repos/${owner}/${reponame}/contents/${filePath}`
     let data = {
@@ -222,7 +236,7 @@ const gfgLoader = setInterval(() => {
     const submitBtn = document.querySelector('button[class="ui button problems_submit_button__6QoNQ"]')
     submitBtn.addEventListener('click', function () {
       START_MONITOR = true;
-      const submission = setInterval(() => {
+      const submission = setInterval(async () => {
         const questionStatus = document.querySelector('div[class="problems_content_pane__nexJa"] > div > h3 ').innerText;
         if (questionStatus === 'Problem Solved Successfully' && START_MONITOR) {
           console.log("HERE INSIDE the successTag", questionStatus)
@@ -233,7 +247,7 @@ const gfgLoader = setInterval(() => {
           title = findTitle().trim();
           difficulty = findDifficulty();
           problemStatement = getProblemStatement();
-          // code = getCode();
+          code = await getCodeScript();
           language = findGfgLanguage();
           // const probName = `${title} - GFG`;
           // problemStatement = `# ${title}\n## ${difficulty}\n${problemStatement}`;
@@ -243,9 +257,9 @@ const gfgLoader = setInterval(() => {
           console.log("difficulty >>>", difficulty)
           console.log("problemStatement >>>", problemStatement)
           console.log("language >>>>", language)
-          // console.log("code >>>>", code)
+          console.log("code >>>>", code)
 
-          pushCode("", difficulty, title, problemStatement, language, 'gfg')
+          pushCode(code, difficulty, title, problemStatement, language, 'gfg')
         } else if (questionStatus === 'Wrong Answer. !!!' || questionStatus === 'Compilation Error') {
           console.log("HERE INSIDE the failTag", questionStatus)
           clearInterval(submission);

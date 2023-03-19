@@ -40,23 +40,8 @@
       "js": [
         "scripts/leetcode.js"
       ],
-      "css": [
-        "focus-mode.css"
-      ],
       "matches": [
         "https://leetcode.com/*"
-      ],
-      "run_at": "document_idle"
-    },
-    {
-      "js": [
-        "scripts/w3.js"
-      ],
-      "css": [
-        "css/w3.css"
-      ],
-      "matches": [
-        "https://www.w3schools.com/*"
       ],
       "run_at": "document_idle"
     },

@@ -85,8 +85,6 @@ async function fetchUserProfile(token) {
           })
 
           chrome.runtime.sendMessage({ userProfile })
-          const dashboardPage = chrome.runtime.getURL('dashboard.html');
-          chrome.tabs.create({ url: dashboardPage, active: true });
         }
       }
     });
@@ -108,11 +106,17 @@ async function fetchEmail(token) {
           const userEmails = JSON.parse(xhr.responseText)
 
           if (userEmails && userEmails.length > 0) {
-            const { email = '' } = userEmails[0]
+            // TODO: check for primary: true. loop and check primary = true set 
+            userEmails.map((e) => {
+              const { email = '', primary } = e
+              if(primary) {
+                chrome.storage.local.set({ "githubUserEmail": email }, () => {
+                  console.log("GITHUB USER's EMAIL IS SET")
+                })
+                return
+              }
+            }) 
 
-            chrome.storage.local.set({ "githubUserEmail": email }, () => {
-              console.log("GITHUB USER's EMAIL IS SET")
-            })
 
           }
         }
