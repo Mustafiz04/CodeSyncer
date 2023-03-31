@@ -3,13 +3,14 @@ body {
 }
 
 #logo {
-  height: 15%;
-  width: 15%;
+  height: 20%;
+  width: 20%;
+  margin: 15px 0px 0px 0px;
 }
 
 #welcome {
   font-size: 30px;
-  margin-top: -70px;
+  /* margin-top: -70px; */
 }
 
 #linking > div {
@@ -57,10 +58,42 @@ body {
   justify-content: space-evenly;
 }
 
-footer {
-  position: absolute;
+.rules {
+  width: 70%;
+  margin: 70px auto;
+  padding: 10px 0px;
+  border-top: 1px solid black;
+}
+
+.collapsible {
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  padding: 18px;
   width: 100%;
-  bottom: 50px;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  border-bottom: 2px solid black;
+}
+
+/* .active, .collapsible:hover {
+  background-color: #555;
+} */
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  /* background-color: #f1f1f1; */
+}
+
+
+footer {
+  width: 100%;
+
+  margin: 100px 0px 25px;
   font-size: 15px;
 }
 

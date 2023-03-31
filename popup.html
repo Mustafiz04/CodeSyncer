@@ -1,42 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="./css/popup.css" />
-  </head>
-  <body>
-    <h1>PushMyCode</h1>
-    <h5>Sync your Leetcode submission with GitHub</h5>
-    <button id="githubOauthInit" ><i class="fa-brands fa-github"></i> Authenticate with GitHub</button>
-    <a href="/dashboard.html" id="githubRepoLink" target="_blank"><p id="unlinkRepoName">Link or Create new repo to use</p></a>
-    <!-- <h1 id="githubName"> </h1>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+    integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Google tag (gtag.js) -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-CLMW86V8TB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-CLMW86V8TB');
+  </script> -->
+  <link rel="stylesheet" href="./css/popup.css" />
+</head>
+
+<body>
+  <!-- <h1>CodeSyncer</h1> -->
+  <img id="popuoLogo" width="50%" height="50%" src="./static/images/logo3.png" />
+  <h5>Sync your Leetcode submission with GitHub</h5>
+  <button id="githubOauthInit"><i class="fa-brands fa-github"></i> Authenticate with GitHub</button>
+  <a href="/dashboard.html" id="githubRepoLink" target="_blank">
+    <p id="unlinkRepoName">Link or Create new repo to use</p>
+  </a>
+  <!-- <h1 id="githubName"> </h1>
     <h1 id="githubUsername"></h1> -->
 
-    <div id="countTab">
-      <div id="score">
-        <div>Easy - <span id="easyCount">0</span></div> 
-        <div>Medium - <span id="mediumCount">0</span></div> 
-        <div>Hard - <span id="hardCount">0</span></div> 
-      </div>
-      <!-- <p>Hard - <span id="hardCount">0</span></p> -->
-
-      <h3>Total - <span id="totalCount">0</span></h3>
+  <div id="countTab">
+    <div id="score">
+      <div>Easy - <span id="easyCount">0</span></div>
+      <div>Medium - <span id="mediumCount">0</span></div>
+      <div>Hard - <span id="hardCount">0</span></div>
     </div>
+    <!-- <p>Hard - <span id="hardCount">0</span></p> -->
 
-    <footer>
-      <button id="openDashboardBtn">Dashboard</button>
-      <hr>
-      <div id="social-media">
-        <a  href="mailto:kaifee000+extension@gmail.com?subject=Feedback" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i> Gmail</a> |
-        <a  href="https://github.com/Mustafiz04" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a> |
-        <a href="https://twitter.com/mustafiz_kaifee" target="_blank"><i class="fa-brands fa-twitter"></i> Twitter</a> |
-        <a href="https://www.linkedin.com/in/mustafizkaifee/" target="_blank"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
-      </div>
-    </footer>
+    <h3>Total - <span id="totalCount">0</span></h3>
+  </div>
 
-    <script src="./scripts/popup.js" type="module"></script>
-  </body>
+  <footer>
+    <button id="openDashboardBtn">Dashboard</button>
+    <p><a href="mailto:mustafizkaifee04+extension@gmail.com?subject=Feedback" target="_blank" id="reportIssues">Report
+        any issues</a></p>
+    <hr>
+    <div id="social-media">
+      <a href="mailto:mustafizkaifee04+extension@gmail.com?subject=Feedback" target="_blank"><i class="fa fa-envelope"
+          aria-hidden="true"></i> Gmail</a> |
+      <a href="https://github.com/Mustafiz04" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a> |
+      <a href="https://twitter.com/mustafiz_kaifee" target="_blank"><i class="fa-brands fa-twitter"></i> Twitter</a> |
+      <a href="https://www.linkedin.com/in/mustafizkaifee/" target="_blank"><i class="fa-brands fa-linkedin"></i>
+        LinkedIn</a>
+    </div>
+  </footer>
+
+  <script src="./scripts/popup.js" type="module"></script>
+</body>
+
 </html>

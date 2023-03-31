@@ -6,16 +6,14 @@ async function main() {
   // https://leetcode.com/problems/check-completeness-of-a-binary-tree/description/
   questionNameFromUrl = url.split('/')[4]
   console.log("url.split('/')[4] >>>", questionNameFromUrl)
-  if (questionNameFromUrl === 'all' || !questionNameFromUrl) {
-    return
-  } else if( url.split('/')[5] == '' || url.split('/')[5] == 'description' ) {
+  if (url.split('/')[3] == 'problems' && (url.split('/')[5] == '' || url.split('/')[5] == 'description')) {
     while (!problemStatement || !problemTitle || !problemDifficulties) {
       problemStatement = await getProblemStatement()
       problemTitle = await getProblemTitle()
       problemDifficulties = await getProblemDifficultites()
     }
-    questionPastStatus = document.querySelectorAll('div[class="rounded p-[3px] text-lg transition-colors duration-200 text-green-s dark:text-dark-green-s"] > svg')[0] ? true: false
-    document.getElementsByClassName("mt-3 flex space-x-4")[0].innerHTML += "<span style='color:green;'>Question details fetch successfully</span>"
+    questionPastStatus = document.querySelectorAll('div[class="rounded p-[3px] text-lg transition-colors duration-200 text-green-s dark:text-dark-green-s"] > svg')[0] ? true : false
+    document.getElementsByClassName("mt-3 flex space-x-4")[0].innerHTML += "<span style='color:green;'>Successfully retrieved the question's details</span>"
     const questionDetails = {
       problemStatement,
       problemTitle,
@@ -25,6 +23,8 @@ async function main() {
     chrome.storage.local.set({ questionNameFromUrl: questionDetails }, () => {
       console.log(`questionNameFromUrl is set to ${JSON.stringify(questionDetails)}`)
     })
+  } else {
+    return
   }
 }
 
@@ -112,8 +112,11 @@ const checkPageLoaded = setInterval(() => {
   }
 }, 2500)
 
-async function pushCodeToGithub(token, difficulty, content, owner, reponame, filePath, commitMessage, committer, commitType, commitAction) {
+async function pushCodeToGithub(token, difficulty, content, owner, reponame, filePath, commitMessage, committer, commitType, commitAction, sha) {
   try {
+    if (commitType == 'readme' && sha) {
+      return
+    }
     const url = `https://api.github.com/repos/${owner}/${reponame}/contents/${filePath}`
     let data = {
       message: commitMessage,
@@ -121,9 +124,9 @@ async function pushCodeToGithub(token, difficulty, content, owner, reponame, fil
       committer,
     };
 
-    // if(questionPastStatus) {
-    //   data['sha'] = ''
-    // }
+    if (sha && commitAction == 'update') {
+      data['sha'] = sha
+    }
 
     console.log("data ???", data)
     console.log("url ???", url)
@@ -170,20 +173,22 @@ async function pushCodeToGithub(token, difficulty, content, owner, reponame, fil
     xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
     await xhr.send(JSON.stringify(data));
   } catch (error) {
-    console.log(error)
+    console.log("push error", error)
   }
 }
 
-async function pushCode(code, difficulty, problemName, problemStatement, language, platform, questionPastStatus) {
+async function pushCode(code, difficulty, problemName, problemStatement, language, platform) {
   /* Get necessary payload data */
-  chrome.storage.local.get(['githubToken', 'githubRepoLinked', 'githubUserAuthenticated', 'linkRepoName', 'githubUserName', 'githubUserEmail', 'sha'], async (userData) => {
+  chrome.storage.local.get(['githubToken', 'githubRepoLinked', 'githubUserAuthenticated', 'linkRepoName', 'githubUserName', 'githubUserEmail', 'userStatistics'], async (userData) => {
+    let readmeSha = '', codeSha = '';
     const token = userData.githubToken;
     const isAuthenticated = userData.githubUserAuthenticated
     const isRepoLinked = userData.githubRepoLinked
     const repoName = userData.linkRepoName
     const username = userData.githubUserName
     const email = userData.githubUserEmail
-    const allSha = userData.sha || {}
+    let { userStatistics } = userData;
+    console.log("userStatistics >>> inside there ///", userStatistics)
 
     console.log("isAuthenticated >>>", isAuthenticated)
     console.log("isRepoLinked >>>", isRepoLinked)
@@ -196,8 +201,8 @@ async function pushCode(code, difficulty, problemName, problemStatement, languag
       const repoame = repoName
       const codeFilePath = `${platform}/${toKebabCase(problemName)}/solution${language}`
       const readmeFilePath = `${platform}/${toKebabCase(problemName)}/README.md`
-      const readmeCommitMessage = "Create README - CodeHub"
-      const codeCommitMessage = "Added solution - CodeHub"
+      const readmeCommitMessage = "Create README - CodeSyncer"
+      const codeCommitMessage = "Added solution - CodeSyncer"
       const committer = {
         name: username,
         email: email
@@ -205,6 +210,15 @@ async function pushCode(code, difficulty, problemName, problemStatement, languag
       const content = code
 
       const readmeContent = `# ${problemName}\n## ${difficulty}\n${problemStatement}`;
+
+      if (userStatistics) {
+        console.log("userStatistics.sha[filePath] >>>", userStatistics.sha[readmeFilePath])
+        console.log("userStatistics.sha[filePath] >>>", userStatistics.sha[codeFilePath])
+        readmeSha = userStatistics.sha[readmeFilePath]
+        codeSha = userStatistics.sha[codeFilePath]
+        console.log("readmeSha", readmeSha)
+        console.log("codeSha", codeSha)
+      }
 
       console.log({
         token,
@@ -219,27 +233,29 @@ async function pushCode(code, difficulty, problemName, problemStatement, languag
         committer,
         readmeContent
       })
-      // if ( stats !== undefined && stats.sha !== undefined && stats.sha[filePath] !== undefined ) {
-      //   sha = stats.sha[filePath];
-      // }
 
       // API call to push code
-      if (problemStatement) {
-        await pushCodeToGithub(token, difficulty, readmeContent, owner, repoName, readmeFilePath, readmeCommitMessage, committer, 'readme', 'new')
+      if (problemStatement && !readmeSha) {
+        const commitAction = 'new'
+        await pushCodeToGithub(token, difficulty, readmeContent, owner, repoName, readmeFilePath, readmeCommitMessage, committer, 'readme', commitAction, readmeSha)
       }
 
-      await delay(10000);
+      await delay(5000);
 
       if (code) {
-        await pushCodeToGithub(token, difficulty, content, owner, repoName, codeFilePath, codeCommitMessage, committer, 'code', 'new')
+        let commitAction = 'new'
+        if (codeSha) {
+          commitAction = 'update'
+        }
+        await pushCodeToGithub(token, difficulty, content, owner, repoName, codeFilePath, codeCommitMessage, committer, 'code', commitAction, codeSha)
       }
 
       solutionSumbitted = true
-      chrome.storage.local.remove(['questionNameFromUrl'], function (Items) {
-        console.log("Question details removed")
-      })
+      // chrome.storage.local.remove(['questionNameFromUrl'], function (Items) {
+      //   console.log("Question details removed")
+      // })
       document.querySelectorAll('div[class="mr-2 flex flex-1 flex-nowrap items-center space-x-4"]')[0].innerHTML +=
-        `<h3 id='successTagCode' style='color: green; display:flex;'><span><svg xmlns='http://www.w3.org/2000/svg' viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" class="h-5 w-5"><path fill-rule="evenodd" d="M20 12.005v-.828a1 1 0 112 0v.829a10 10 0 11-5.93-9.14 1 1 0 01-.814 1.826A8 8 0 1020 12.005zM8.593 10.852a1 1 0 011.414 0L12 12.844l8.293-8.3a1 1 0 011.415 1.413l-9 9.009a1 1 0 01-1.415 0l-2.7-2.7a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span> Your code is successfully pushed to GitHub</h3>`
+        `<h3 id='successTagCode' style='color: green; display:flex; flexGap'><span><svg xmlns='http://www.w3.org/2000/svg' viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" class="h-5 w-5"><path fill-rule="evenodd" d="M20 12.005v-.828a1 1 0 112 0v.829a10 10 0 11-5.93-9.14 1 1 0 01-.814 1.826A8 8 0 1020 12.005zM8.593 10.852a1 1 0 011.414 0L12 12.844l8.293-8.3a1 1 0 011.415 1.413l-9 9.009a1 1 0 01-1.415 0l-2.7-2.7a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span> &nbsp <span>Your code has been successfully uploaded to GitHub.</span></h3>`
     }
   });
 }

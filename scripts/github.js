@@ -31,8 +31,8 @@ async function requestToken(code) {
     console.log("CODE >>>", code)
 
     const body = {
-      client_id: "806acb3c07d1af17f11f",
-      client_secret: "c1c76ffc402b4c814939ff29b7e6e0ed594690fe",
+      client_id: "ac58a3ad6a629746c03e",
+      client_secret: "7eac42efb8503327299e2eec9f9841bb34535542",
       code: code
     };
     const url = 'https://github.com/login/oauth/access_token';

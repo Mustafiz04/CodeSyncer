@@ -44,13 +44,19 @@ chrome.storage.local.get(
   }
 )
 
-function getCurrentTab() { 
+function getCurrentTab() {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
     console.log("tab ????", tab)
-    chrome.storage.local.set({"currentTab": tab.id}, () => {
+    chrome.storage.local.set({ "currentTab": tab.id }, () => {
       console.log("CURRENT TAB ID IS SET", tab)
     })
   });
 };
 
 getCurrentTab()
+
+// chrome.tabs.query({ active: true }, function(tabs) {  
+//   chrome.tabs.remove(tabs[0].id, () => {
+//     alert("TAB IS CLOSED")
+//   });   
+// }); 

@@ -46,6 +46,10 @@ h5 {
   justify-content: center;
 }
 
+#reportIssues {
+  text-decoration: none;
+}
+
 footer > button {
   /* background: none; */
   border: 1px solid white;

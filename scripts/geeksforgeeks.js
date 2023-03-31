@@ -65,58 +65,63 @@ function getProblemStatement() {
 }
 
 function getCode() {
-  const scriptContent = `
-  var editor = ace.edit("ace-editor");
-  var editorContent = editor.getValue();
-  var para = document.createElement("pre");
-  para.innerText+=editorContent;
-  para.setAttribute("id","codeDataLeetHub")
-  document.body.appendChild(para);
-  `;
+  // const scriptContent =
+  //   `
+  //   var editor = ace.edit("ace-editor");
+  //   var editorContent = editor.getValue();
+  //   var para = document.createElement("pre");
+  //   para.innerText += editorContent;
+  //   para.setAttribute("id", "CodeSyncer")
+  //   document.body.appendChild(para);
+  // `;
 
-  var script = document.createElement('script');
-  script.id = 'tmpScript';
-  script.appendChild(document.createTextNode(scriptContent));
-  (
-    document.body ||
-    document.head ||
-    document.documentElement
-  ).appendChild(script);
-  const text = document.getElementById('codeDataLeetHub').innerText;
+  // var script = document.createElement('script');
+  // // script.src = src
+  // script.id = 'tmpScript';
+  // script.appendChild(document.createTextNode(scriptContent));
+  // (
+  //   document.body ||
+  //   document.head ||
+  //   document.documentElement
+  // ).appendChild(script);
+  // const text = document.getElementById('CodeSyncer').innerText;
 
-  const nodeDeletionScript = `document.body.removeChild(para)`;
-  var script = document.createElement('script');
-  script.id = 'tmpScript';
-  script.appendChild(document.createTextNode(nodeDeletionScript));
-  (
-    document.body ||
-    document.head ||
-    document.documentElement
-  ).appendChild(script);
+  // const nodeDeletionScript = `document.body.removeChild(para)`;
+  // var script = document.createElement('script');
+  // script.id = 'tmpScript';
+  // script.appendChild(document.createTextNode(nodeDeletionScript));
+  // (
+  //   document.body ||
+  //   document.head ||
+  //   document.documentElement
+  // ).appendChild(script);
 
+  let codeDiv = document.querySelector(".ace_layer.ace_text-layer");
+  let text = codeDiv.innerText;
   return text || '';
 }
 
-async function getCodeScript() {
-  chrome.storage.local.get(["currentTab"], (res) => {
-    chrome.scripting.executeScript({
-      target: { tabId: res.currentTab },
-      func: getCode,
-      args: [],
-    });
-  })
-}
+// async function getCodeScript() {
+//   chrome.storage.local.get(["currentTab"], (res) => {
+//     chrome.scripting.executeScript({
+//       target: { tabId: res.currentTab },
+//       func: getCode,
+//       args: [],
+//     });
+//   })
+// }
 
 async function pushCode(code, difficulty, problemName, problemStatement, language, platform) {
   /* Get necessary payload data */
-  chrome.storage.local.get(['githubToken', 'githubRepoLinked', 'githubUserAuthenticated', 'linkRepoName', 'githubUserName', 'githubUserEmail', 'sha'], async (userData) => {
+  chrome.storage.local.get(['githubToken', 'githubRepoLinked', 'githubUserAuthenticated', 'linkRepoName', 'githubUserName', 'githubUserEmail', 'userStatistics'], async (userData) => {
     const token = userData.githubToken;
     const isAuthenticated = userData.githubUserAuthenticated
     const isRepoLinked = userData.githubRepoLinked
     const repoName = userData.linkRepoName
     const username = userData.githubUserName
     const email = userData.githubUserEmail
-    const allSha = userData.sha || {}
+    let { userStatistics } = userData;
+    console.log("userStatistics >>> inside there ///", userStatistics)
 
     console.log("isAuthenticated >>>", isAuthenticated)
     console.log("isRepoLinked >>>", isRepoLinked)
@@ -138,6 +143,14 @@ async function pushCode(code, difficulty, problemName, problemStatement, languag
       const content = code  // convert to base64
 
       const readmeContent = `# ${problemName}\n## ${difficulty}\n${problemStatement}`;
+      if (userStatistics) {
+        console.log("userStatistics.sha[filePath] >>>", userStatistics.sha[readmeFilePath])
+        console.log("userStatistics.sha[filePath] >>>", userStatistics.sha[codeFilePath])
+        readmeSha = userStatistics.sha[readmeFilePath]
+        codeSha = userStatistics.sha[codeFilePath]
+        console.log("readmeSha", readmeSha)
+        console.log("codeSha", codeSha)
+      }
 
       console.log({
         token,
@@ -157,14 +170,19 @@ async function pushCode(code, difficulty, problemName, problemStatement, languag
       // }
 
       // API call to push code
-      if (problemStatement) {
-        await pushCodeToGithub(token, difficulty, readmeContent, owner, repoName, readmeFilePath, readmeCommitMessage, committer, 'readme', 'new')
+      if (problemStatement && !readmeSha) {
+        const commitAction = 'new'
+        await pushCodeToGithub(token, difficulty, readmeContent, owner, repoName, readmeFilePath, readmeCommitMessage, committer, 'readme', commitAction, readmeSha)
       }
 
-      await delay(10000);
+      await delay(5000);
 
       if (code) {
-        await pushCodeToGithub(token, difficulty, content, owner, repoName, codeFilePath, codeCommitMessage, committer, 'code', 'new')
+        let commitAction = 'new'
+        if (codeSha) {
+          commitAction = 'update'
+        }
+        await pushCodeToGithub(token, difficulty, content, owner, repoName, codeFilePath, codeCommitMessage, committer, 'code', commitAction, codeSha)
       }
     }
   });
@@ -172,14 +190,21 @@ async function pushCode(code, difficulty, problemName, problemStatement, languag
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
-async function pushCodeToGithub(token, difficulty, content, owner, reponame, filePath, commitMessage, committer, commitType, commitAction) {
+async function pushCodeToGithub(token, difficulty, content, owner, reponame, filePath, commitMessage, committer, commitType, commitAction, sha) {
   try {
+    if (commitType == 'readme' && sha) {
+      return
+    }
     const url = `https://api.github.com/repos/${owner}/${reponame}/contents/${filePath}`
     let data = {
       message: commitMessage,
       content: btoa(unescape(encodeURIComponent(content))),
       committer,
     };
+
+    if (sha && commitAction == 'update') {
+      data['sha'] = sha
+    }
 
     console.log("data ???", data)
     console.log("url ???", url)
@@ -224,7 +249,7 @@ async function pushCodeToGithub(token, difficulty, content, owner, reponame, fil
     xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
     xhr.send(JSON.stringify(data));
   } catch (error) {
-    console.log(error)
+    console.log("push error", error)
   }
 }
 
@@ -237,32 +262,37 @@ const gfgLoader = setInterval(() => {
     submitBtn.addEventListener('click', function () {
       START_MONITOR = true;
       const submission = setInterval(async () => {
-        const questionStatus = document.querySelector('div[class="problems_content_pane__nexJa"] > div > h3 ').innerText;
-        if (questionStatus === 'Problem Solved Successfully' && START_MONITOR) {
-          console.log("HERE INSIDE the successTag", questionStatus)
-          START_MONITOR = false;
-          clearInterval(gfgLoader);
-          clearInterval(submission);
+        let questionStatus
+        const questionStatusDiv = document.querySelector('div[class="problems_content_pane__nexJa"] > div > h3 ');
+        if (questionStatusDiv) {
+          questionStatus = questionStatusDiv.innerText
+          if (questionStatus === 'Problem Solved Successfully' && START_MONITOR) {
+            console.log("HERE INSIDE the successTag", questionStatus)
+            START_MONITOR = false;
+            clearInterval(gfgLoader);
+            clearInterval(submission);
 
-          title = findTitle().trim();
-          difficulty = findDifficulty();
-          problemStatement = getProblemStatement();
-          code = await getCodeScript();
-          language = findGfgLanguage();
-          // const probName = `${title} - GFG`;
-          // problemStatement = `# ${title}\n## ${difficulty}\n${problemStatement}`;
+            title = findTitle().trim();
+            difficulty = findDifficulty();
+            problemStatement = getProblemStatement();
+            // code = await getCodeScript();
+            code = await getCode();
+            language = findGfgLanguage();
+            // const probName = `${title} - GFG`;
+            // problemStatement = `# ${title}\n## ${difficulty}\n${problemStatement}`;
 
 
-          console.log("title <<<<>>>", title)
-          console.log("difficulty >>>", difficulty)
-          console.log("problemStatement >>>", problemStatement)
-          console.log("language >>>>", language)
-          console.log("code >>>>", code)
+            console.log("title <<<<>>>", title)
+            console.log("difficulty >>>", difficulty)
+            console.log("problemStatement >>>", problemStatement)
+            console.log("language >>>>", language)
+            console.log("code >>>>", code)
 
-          pushCode(code, difficulty, title, problemStatement, language, 'gfg')
-        } else if (questionStatus === 'Wrong Answer. !!!' || questionStatus === 'Compilation Error') {
-          console.log("HERE INSIDE the failTag", questionStatus)
-          clearInterval(submission);
+            pushCode(code, difficulty, title, problemStatement, language, 'gfg')
+          } else if (questionStatus === 'Wrong Answer. !!!' || questionStatus === 'Compilation Error') {
+            console.log("HERE INSIDE the failTag", questionStatus)
+            clearInterval(submission);
+          }
         }
       }, 1000);
     });

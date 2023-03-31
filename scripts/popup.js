@@ -55,7 +55,7 @@ openDashboardBtn.addEventListener('click', async () => {
 })
 
 function githubAuthorizePage() {
-  const url = `https://github.com/login/oauth/authorize?client_id=806acb3c07d1af17f11f&redirect_uri=https://github.com/&scope=repo,read:user,user:email`
+  const url = `https://github.com/login/oauth/authorize?client_id=ac58a3ad6a629746c03e&redirect_uri=https://github.com/&scope=repo,read:user,user:email`
   chrome.storage.local.set({ pipe_codehub: true }, () => {
     chrome.tabs.create({ url, active: true }, function () {
       window.close();

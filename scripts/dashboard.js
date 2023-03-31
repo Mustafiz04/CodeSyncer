@@ -13,6 +13,21 @@ const githubRepoLinkA = document.getElementById('githubRepoLink')
 const hardCountSpan = document.getElementById('hardCount')
 let githubOwner, token
 
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function () {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+
 chrome.storage.local.get(
   ['githubUserName', 'githubName', 'githubToken', 'linkRepoName', 'likedRepoFullname', 'userStatistics'],
   (res) => {
@@ -33,10 +48,10 @@ chrome.storage.local.get(
     easyCountSpan.innerText = easyQuestionSolved || 0
     mediumCountSpan.innerText = mediumQuestionSolved || 0
     hardCountSpan.innerText = hardQuestionSolved || 0
-  
+
     totalCountSpan.innerText = totalQuestionSolved || 0
 
-    if( res.linkRepoName ) {
+    if (res.linkRepoName) {
       linkingDiv.style.display = 'none'
     } else {
       unlinkButton.style.display = 'none'
@@ -56,12 +71,12 @@ linkRepoBtn.addEventListener('click', async () => {
 })
 
 unlinkButton.addEventListener('click', async () => {
-  chrome.storage.local.remove(['likedRepoFullname', 'linkRepoName'], function(Items) {
+  chrome.storage.local.remove(['likedRepoFullname', 'linkRepoName'], function (Items) {
     console.log("Removed")
     linkingDiv.style.display = 'block'
     unlinkButton.style.display = 'none'
     githubRepoLinkA.style.display = 'none'
-    
+
   })
 })
 
@@ -74,7 +89,7 @@ function handleResponse(res) {
 
     const repoName = res.name
     const fullName = res.full_name
-    if( repoName ) {
+    if (repoName) {
       linkingDiv.style.display = 'none'
       unlinkButton.style.display = 'inline'
       githubRepoLinkA.style.display = 'inline'
@@ -140,7 +155,7 @@ async function createNewPrivateRepo(repoName) {
       name: repoName,
       private: true,
       auto_init: true,
-      description: 'Private Repository create by PushMyCode Extenstion',
+      description: 'Private Repository create by CodeSyncer Extenstion',
     }
     const xhr = new XMLHttpRequest();
     xhr.addEventListener('readystatechange', function () {
