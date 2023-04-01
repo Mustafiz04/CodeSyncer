@@ -54,9 +54,3 @@ function getCurrentTab() {
 };
 
 getCurrentTab()
-
-// chrome.tabs.query({ active: true }, function(tabs) {  
-//   chrome.tabs.remove(tabs[0].id, () => {
-//     alert("TAB IS CLOSED")
-//   });   
-// }); 

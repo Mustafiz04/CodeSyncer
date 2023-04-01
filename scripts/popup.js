@@ -1,3 +1,7 @@
+const CLIENT_ID = 'ac58a3ad6a629746c03e'
+const CLIENT_SERCRET = '7eac42efb8503327299e2eec9f9841bb34535542'
+const GITHUB_OAUTH = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=https://github.com/&scope=repo,read:user,user:email`
+
 const githubUserame = document.getElementById('githubUsername')
 const githubName = document.getElementById('githubName')
 const githubOauthInitBtn = document.getElementById('githubOauthInit')
@@ -16,7 +20,7 @@ chrome.storage.local.get(['githubUserName', 'githubName', 'githubToken', 'github
   console.log("res.githubUserName >>>", res.githubUserName)
   console.log("res.githubName >>>", res.githubName)
   console.log("res.githubUserEmail >>>", res.githubUserEmail)
-  if(res.likedRepoFullname) {
+  if (res.likedRepoFullname) {
     unlinkRepoName.innerText = res.likedRepoFullname || ""
     unlinkRepoName.style.color = 'blue'
     githubRepoLinkA.href = "https://github.com/" + res.likedRepoFullname
@@ -55,7 +59,7 @@ openDashboardBtn.addEventListener('click', async () => {
 })
 
 function githubAuthorizePage() {
-  const url = `https://github.com/login/oauth/authorize?client_id=ac58a3ad6a629746c03e&redirect_uri=https://github.com/&scope=repo,read:user,user:email`
+  const url = GITHUB_OAUTH
   chrome.storage.local.set({ pipe_codehub: true }, () => {
     chrome.tabs.create({ url, active: true }, function () {
       window.close();

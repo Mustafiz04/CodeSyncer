@@ -1,3 +1,9 @@
+const CLIENT_ID = 'ac58a3ad6a629746c03e'
+const CLIENT_SERCRET = '7eac42efb8503327299e2eec9f9841bb34535542'
+const GITHUB_OAUTH = 'https://github.com/login/oauth/access_token'
+const GITHUB_USER = 'https://api.github.com/user'
+const GITHUB_EMAIL = 'https://api.github.com/user/emails'
+
 const link = window.location.href;
 
 if (window.location.host === 'github.com') {
@@ -31,11 +37,11 @@ async function requestToken(code) {
     console.log("CODE >>>", code)
 
     const body = {
-      client_id: "ac58a3ad6a629746c03e",
-      client_secret: "7eac42efb8503327299e2eec9f9841bb34535542",
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SERCRET,
       code: code
     };
-    const url = 'https://github.com/login/oauth/access_token';
+    const url = GITHUB_OAUTH;
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -52,7 +58,7 @@ async function requestToken(code) {
       });
     console.log("RESPONSE >>>", response)
 
-    // access_token : "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"
+    // access_token : "gho_dbYHZGoIfL7o7K7XHJr97lhJcF2dNl33JJ"
     // scope:  "repo"
     // token_type : "bearer"
     const { access_token = '' } = response
@@ -88,7 +94,7 @@ async function fetchUserProfile(token) {
         }
       }
     });
-    xhr.open('GET', 'https://api.github.com/user', true);
+    xhr.open('GET', GITHUB_USER, true);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send();
   } catch (error) {
@@ -122,7 +128,7 @@ async function fetchEmail(token) {
         }
       }
     });
-    xhr.open('GET', 'https://api.github.com/user/emails', true);
+    xhr.open('GET', GITHUB_EMAIL, true);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send();
   } catch (error) {
