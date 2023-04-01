@@ -1,5 +1,5 @@
-const CLIENT_ID = 'ac58a3ad6a629746c03e'
-const CLIENT_SERCRET = '7eac42efb8503327299e2eec9f9841bb34535542'
+const CLIENT_ID = ''
+const CLIENT_SERCRET = ''
 const GITHUB_OAUTH = 'https://github.com/login/oauth/access_token'
 const GITHUB_USER = 'https://api.github.com/user'
 const GITHUB_EMAIL = 'https://api.github.com/user/emails'
