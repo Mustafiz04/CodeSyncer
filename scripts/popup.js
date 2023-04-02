@@ -1,5 +1,5 @@
-const CLIENT_ID = 'ac58a3ad6a629746c03e'
-const CLIENT_SERCRET = '7eac42efb8503327299e2eec9f9841bb34535542'
+const CLIENT_ID = ''
+const CLIENT_SERCRET = ''
 const GITHUB_OAUTH = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=https://github.com/&scope=repo,read:user,user:email`
 
 const githubUserame = document.getElementById('githubUsername')
