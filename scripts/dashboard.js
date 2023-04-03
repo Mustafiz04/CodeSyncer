@@ -94,7 +94,7 @@ function handleResponse(res) {
       unlinkButton.style.display = 'inline'
       githubRepoLinkA.style.display = 'inline'
       unlinkRepoName.innerText = fullName || ""
-      githubRepoLinkA.href = "https://github.com/" + repoName
+      githubRepoLinkA.href = "https://github.com/" + fullName
     } else {
       unlinkButton.style.display = 'none'
     }
