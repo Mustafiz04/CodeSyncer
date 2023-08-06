@@ -43,3 +43,7 @@ Open Chrome
 <img width="344" alt="Screenshot 2023-04-01 at 12 25 57 AM" src="https://user-images.githubusercontent.com/49086821/229206209-0204d3a6-5fa8-4897-855b-808bf0d7ad81.png">
 <img width="1680" alt="Screenshot 2023-03-31 at 12 44 28 AM" src="https://user-images.githubusercontent.com/49086821/229205931-e0a589cb-fc8d-468a-85cc-a2040e516c78.png">
 <img width="1680" alt="Screenshot 2023-03-31 at 12 43 16 AM" src="https://user-images.githubusercontent.com/49086821/229205984-00570b0c-e111-4faf-938e-0fd7a71c9608.png">
+
+
+<br>
+<a href="https://www.producthunt.com/posts/codesyncer?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-codesyncer" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=387911&theme=light" alt="CodeSyncer - Synchronise&#0032;your&#0032;LeetCode&#0032;submissions&#0032;to&#0032;their&#0032;GitHub&#0046; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
