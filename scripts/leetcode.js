@@ -1,4 +1,6 @@
 let problemStatement, problemTitle, problemDifficulties, questionNameFromUrl, solutionSumbitted, questionPastStatus
+const timeoutPromise = (timeout) => new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeout));
+
 console.log("solutionSumbitted >>>", solutionSumbitted)
 async function main() {
   const url = window.location.href
@@ -7,13 +9,8 @@ async function main() {
   questionNameFromUrl = url.split('/')[4]
   console.log("url.split('/')[4] >>>", questionNameFromUrl)
   if (url.split('/')[3] == 'problems' && (url.split('/')[5] == '' || url.split('/')[5] == 'description')) {
-    while (!problemStatement || !problemTitle || !problemDifficulties) {
-      problemStatement = await getProblemStatement()
-      problemTitle = await getProblemTitle()
-      problemDifficulties = await getProblemDifficultites()
-    }
+    await runLoopWithTimeout();
     questionPastStatus = document.querySelectorAll('div[class="rounded p-[3px] text-lg transition-colors duration-200 text-green-s dark:text-dark-green-s"] > svg')[0] ? true : false
-    document.getElementsByClassName("mt-3 flex space-x-4")[0].innerHTML += "<span style='color:green;'>Successfully retrieved the question's details</span>"
     const questionDetails = {
       problemStatement,
       problemTitle,
@@ -25,6 +22,24 @@ async function main() {
     })
   } else {
     return
+  }
+}
+
+async function runLoopWithTimeout() {
+  try {
+    await Promise.race([
+      (async () => { problemStatement = await getProblemStatement(); })(),
+      (async () => { problemTitle = await getProblemTitle(); })(),
+      (async () => { problemDifficulties = await getProblemDifficultites(); })(),
+      timeoutPromise(30000)
+    ]);
+
+    if (!problemStatement || !problemTitle || !problemDifficulties) {
+      throw new Error('Loop did not complete successfully within 30 seconds.');
+    }
+    document.getElementsByClassName("mt-3 flex space-x-4")[0].innerHTML += "<span style='color:green;'>Successfully retrieved the question's details</span>"
+  } catch (error) {
+    document.getElementsByClassName("mt-3 flex space-x-4")[0].innerHTML += "<span style='color:red;'>Error fetching the question details. Please refesh or skip</span>"
   }
 }
 
@@ -61,10 +76,10 @@ const toKebabCase = (string) => {
 
 
 async function findLanguage() {
-  const tag = document.querySelectorAll('div[class="mb-4"] > span[class="inline-flex items-center whitespace-nowrap text-xs rounded-full bg-blue-0 dark:bg-dark-blue-0 text-blue-s dark:text-dark-blue-s px-3 py-1 font-medium leading-4"]')[0]
+  const tag = document.getElementsByClassName("inline-flex items-center whitespace-nowrap text-xs rounded-full bg-blue-0 dark:bg-dark-blue-0")
   console.log("TAG <<<>>>", tag)
   if (tag) {
-    const tagText = tag.innerText
+    const tagText = tag[0].innerText
     return languages[tagText]
   }
   return "";
@@ -79,7 +94,7 @@ async function getProblemStatement() {
 }
 
 async function getProblemTitle() {
-  const poblemTitleDiv = document.querySelectorAll('div[class="h-full"] > span[class="mr-2 text-lg font-medium text-label-1 dark:text-dark-label-1"]')[0]
+  const poblemTitleDiv = document.querySelectorAll('div[class="flex h-full items-center"] > a[class="mr-2 text-label-1 dark:text-dark-label-1 hover:text-label-1 dark:hover:text-dark-label-1 text-lg font-medium"]')[0]
   if (poblemTitleDiv) {
     return poblemTitleDiv.innerHTML
   }
@@ -87,7 +102,7 @@ async function getProblemTitle() {
 }
 
 async function getProblemDifficultites() {
-  const problemDifficultyDiv = document.querySelectorAll('div[class="mt-3 flex space-x-4"] > div')[0]
+  const problemDifficultyDiv = document.querySelectorAll('div[class="mt-3 flex items-center space-x-4"] > div')[0]
   if (problemDifficultyDiv) {
     return problemDifficultyDiv.innerHTML
   }
@@ -95,14 +110,34 @@ async function getProblemDifficultites() {
 }
 
 async function getCode() {
-  const codeElement = document.querySelectorAll('code');
-  let codeText = '';
+  try {
+    const divElement = document.getElementsByClassName("group flex h-[40px] cursor-pointer items-center");
+    console.log("divElement >>>", divElement[0]);
 
-  codeElement.forEach((item) => {
-    codeText += item.textContent;
-  });
+    // Simulate a click event on the div element
+    divElement[0].click();
 
-  return codeText
+    // Wait for a short delay using a Promise
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Adjust the delay as needed
+
+    // Get a reference to the pre element
+    var preElement = document.querySelector('pre');
+
+    // Check if the pre element exists and is visible
+    if (preElement && window.getComputedStyle(preElement).display !== 'none') {
+      // Extract the data from the pre element
+      var extractedData = preElement.innerText;
+
+      // You can do whatever you want with the extracted data here
+      return extractedData;
+    } else {
+      console.log("Pre element is not visible");
+      return null;
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return null;
+  }
 }
 
 const checkPageLoaded = setInterval(() => {
@@ -254,7 +289,7 @@ async function pushCode(code, difficulty, problemName, problemStatement, languag
       // chrome.storage.local.remove(['questionNameFromUrl'], function (Items) {
       //   console.log("Question details removed")
       // })
-      document.querySelectorAll('div[class="mr-2 flex flex-1 flex-nowrap items-center space-x-4"]')[0].innerHTML +=
+      document.querySelectorAll('div[class="flex flex-1 flex-nowrap items-center gap-4"]')[0].innerHTML +=
         `<h3 id='successTagCode' style='color: green; display:flex; flexGap'><span><svg xmlns='http://www.w3.org/2000/svg' viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" class="h-5 w-5"><path fill-rule="evenodd" d="M20 12.005v-.828a1 1 0 112 0v.829a10 10 0 11-5.93-9.14 1 1 0 01-.814 1.826A8 8 0 1020 12.005zM8.593 10.852a1 1 0 011.414 0L12 12.844l8.293-8.3a1 1 0 011.415 1.413l-9 9.009a1 1 0 01-1.415 0l-2.7-2.7a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span> &nbsp <span>Your code has been successfully uploaded to GitHub.</span></h3>`
     }
   });
@@ -271,11 +306,11 @@ const leetcodeLoader = setInterval(async () => {
   if (
     window.location.href.includes('leetcode.com/problems')
   ) {
-    const submitBtn = document.querySelector("button[class='px-3 py-1.5 font-medium items-center whitespace-nowrap transition-all focus:outline-none inline-flex text-label-r bg-green-s dark:bg-dark-green-s hover:bg-green-3 dark:hover:bg-dark-green-3 rounded-lg']")
+    const submitBtn = document.querySelector("button[class='py-1.5 font-medium items-center whitespace-nowrap focus:outline-none inline-flex text-label-r bg-green-s dark:bg-dark-green-s hover:bg-green-3 dark:hover:bg-dark-green-3 h-[28px] select-none rounded px-5 text-[13px] leading-[18px]']")
     if (submitBtn) {
       submitBtn.addEventListener('click', () => {
         const submission = setInterval(async () => {
-          const questionStatusDiv = document.querySelector('div[class="text-green-s dark:text-dark-green-s flex items-center gap-2 text-[16px] font-medium leading-6"] > span')
+          const questionStatusDiv = document.querySelector('div[class="text-green-s dark:text-dark-green-s flex flex-1 items-center gap-2 text-[16px] font-medium leading-6"] > span')
           if (solutionSumbitted) {
             clearInterval(leetcodeLoader);
             clearInterval(submission);
