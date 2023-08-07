@@ -121,12 +121,12 @@ async function getCode() {
     await new Promise(resolve => setTimeout(resolve, 1000)); // Adjust the delay as needed
 
     // Get a reference to the pre element
-    var preElement = document.querySelector('pre');
+    const preElement = document.querySelector('pre');
 
     // Check if the pre element exists and is visible
     if (preElement && window.getComputedStyle(preElement).display !== 'none') {
       // Extract the data from the pre element
-      var extractedData = preElement.innerText;
+      const extractedData = preElement.innerText;
 
       // You can do whatever you want with the extracted data here
       return extractedData;

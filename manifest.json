@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "CodeSyncer",
   "description": "This Chrome extension enables users to synchronize their LeetCode submissions to their GitHub repository effortlessly.",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "author": "Mustafiz Kaifee",
   "homepage_url": "https://github.com/Mustafiz04",
   "action": {

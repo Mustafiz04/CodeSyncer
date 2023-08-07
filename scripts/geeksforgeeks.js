@@ -64,52 +64,45 @@ function getProblemStatement() {
   return `${ele.outerHTML}`;
 }
 
-function getCode() {
-  // const scriptContent =
-  //   `
-  //   var editor = ace.edit("ace-editor");
-  //   var editorContent = editor.getValue();
-  //   var para = document.createElement("pre");
-  //   para.innerText += editorContent;
-  //   para.setAttribute("id", "CodeSyncer")
-  //   document.body.appendChild(para);
-  // `;
+async function getCode() {
+  try {
+    const divElement = document.getElementsByClassName("green item problems_header_menu__items__BUrou")
+    console.log("divElement >>>", divElement[2]);
 
-  // var script = document.createElement('script');
-  // // script.src = src
-  // script.id = 'tmpScript';
-  // script.appendChild(document.createTextNode(scriptContent));
-  // (
-  //   document.body ||
-  //   document.head ||
-  //   document.documentElement
-  // ).appendChild(script);
-  // const text = document.getElementById('CodeSyncer').innerText;
+    // Simulate a click event on the div element
+    divElement[2].click();
 
-  // const nodeDeletionScript = `document.body.removeChild(para)`;
-  // var script = document.createElement('script');
-  // script.id = 'tmpScript';
-  // script.appendChild(document.createTextNode(nodeDeletionScript));
-  // (
-  //   document.body ||
-  //   document.head ||
-  //   document.documentElement
-  // ).appendChild(script);
+    // Wait for a short delay using a Promise
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Adjust the delay as needed
 
-  let codeDiv = document.querySelector(".ace_layer.ace_text-layer");
-  let text = codeDiv.innerText;
-  return text || '';
+    const table = document.querySelector('.ui.unstackable.table')
+    const tableRow = table.querySelector('tbody tr:first-child td:last-child');
+    const aTag = tableRow.querySelector('a');
+
+    aTag.click()
+    // Wait for a short delay using a Promise
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Adjust the delay as needed
+
+    // Get a reference to the pre element
+    const preElement = document.getElementsByClassName('prettyprint prettyprinted');
+
+    // Check if the pre element exists and is visible
+    if (preElement) {
+      // Extract the data from the pre element
+      const extractedData = preElement[0].innerText;
+
+      // You can do whatever you want with the extracted data here
+      return extractedData;
+    } else {
+      console.log("Pre element is not visible");
+      return null;
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return null;
+  }
 }
 
-// async function getCodeScript() {
-//   chrome.storage.local.get(["currentTab"], (res) => {
-//     chrome.scripting.executeScript({
-//       target: { tabId: res.currentTab },
-//       func: getCode,
-//       args: [],
-//     });
-//   })
-// }
 
 async function pushCode(code, difficulty, problemName, problemStatement, language, platform) {
   /* Get necessary payload data */
@@ -184,6 +177,16 @@ async function pushCode(code, difficulty, problemName, problemStatement, languag
         }
         await pushCodeToGithub(token, difficulty, content, owner, repoName, codeFilePath, codeCommitMessage, committer, 'code', commitAction, codeSha)
       }
+
+      const closebtn = document.getElementsByClassName("close icon")
+      if(closebtn) {
+        closebtn[1].click()
+      }
+      let newParagraph = document.createElement('div')
+      newParagraph.innerHTML = `<p id='successTagCode' style='color: green; display:flex; flexGap'><span><svg xmlns='http://www.w3.org/2000/svg' viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" class="h-5 w-5"><path fill-rule="evenodd" d="M20 12.005v-.828a1 1 0 112 0v.829a10 10 0 11-5.93-9.14 1 1 0 01-.814 1.826A8 8 0 1020 12.005zM8.593 10.852a1 1 0 011.414 0L12 12.844l8.293-8.3a1 1 0 011.415 1.413l-9 9.009a1 1 0 01-1.415 0l-2.7-2.7a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span> &nbsp <span>Your code has been successfully uploaded to GitHub.</span></p>`
+      const parentDiv = document.querySelector('.problems_footer__uv1_E');
+      const secondChild = parentDiv.children[1];
+      parentDiv.insertBefore(newParagraph, secondChild);
     }
   });
 }
@@ -281,14 +284,13 @@ const gfgLoader = setInterval(() => {
             // const probName = `${title} - GFG`;
             // problemStatement = `# ${title}\n## ${difficulty}\n${problemStatement}`;
 
-
             console.log("title <<<<>>>", title)
             console.log("difficulty >>>", difficulty)
             console.log("problemStatement >>>", problemStatement)
             console.log("language >>>>", language)
             console.log("code >>>>", code)
 
-            pushCode(code, difficulty, title, problemStatement, language, 'gfg')
+            await pushCode(code, difficulty, title, problemStatement, language, 'gfg')
           } else if (questionStatus === 'Wrong Answer. !!!' || questionStatus === 'Compilation Error') {
             console.log("HERE INSIDE the failTag", questionStatus)
             clearInterval(submission);

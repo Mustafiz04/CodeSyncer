@@ -5,7 +5,6 @@ const repoNameInput = document.getElementById('repoName')
 const unlinkRepoName = document.getElementById('unlinkRepoName')
 const unlinkButton = document.getElementById('unlink')
 const linkingDiv = document.getElementById('linking')
-// var x = document.querySelector('input[name="colors"]:checked').value;
 const statsDiv = document.getElementById('stats')
 const easyCountSpan = document.getElementById('easyCount')
 const mediumCountSpan = document.getElementById('mediumCount')
@@ -13,13 +12,13 @@ const githubRepoLinkA = document.getElementById('githubRepoLink')
 const hardCountSpan = document.getElementById('hardCount')
 let githubOwner, token
 
-var coll = document.getElementsByClassName("collapsible");
-var i;
+const coll = document.getElementsByClassName("collapsible");
+let i;
 
 for (i = 0; i < coll.length; i++) {
   coll[i].addEventListener("click", function () {
     this.classList.toggle("active");
-    var content = this.nextElementSibling;
+    const content = this.nextElementSibling;
     if (content.style.display === "block") {
       content.style.display = "none";
     } else {
